@@ -41,7 +41,7 @@ vsdep fd32f09
 `,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		result, err := vsdep.Vsdep(args[0])
+		result, err := vsdep.FindOut(args[0])
 		if err != nil {
 			return err
 		}

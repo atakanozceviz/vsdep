@@ -14,10 +14,10 @@ import (
 var ch = make(chan string)
 var wg = &sync.WaitGroup{}
 
-// Vsdep findsout which Visual Studio projects needs to build and
+// FindOut which Visual Studio projects needs to build and
 // which tests needs to run by checking differences between
 // a git commit id and HEAD.
-func Vsdep(lastcommit string) (*Result, error) {
+func FindOut(lastcommit string) (*Result, error) {
 	changes, err := changes.Get(lastcommit)
 	if err != nil {
 		return nil, err
