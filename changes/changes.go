@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Get which projects changed after "lastcommit"
+// Get which projects changed after "lastcommit" (using git diff)
 func Get(lastcommit string) (map[string]string, error) {
 	wd, err := os.Getwd()
 	if err != nil {

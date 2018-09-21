@@ -11,7 +11,7 @@ import (
 
 var projectPattern = regexp.MustCompile(`(?m)Project\(\"(.*?)\"\)\s+=\s+\"(.*?)\",\s+"(.*?)\",\s+\"(.*?)\"`)
 
-// parseSln open sln file, gather information from that file and return parsed projects.
+// parseSln open sln file, parse information from that file and return projects.
 func parseSln(pth string) ([]*Project, error) {
 	var projects []*Project
 
