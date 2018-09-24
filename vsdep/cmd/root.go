@@ -25,22 +25,27 @@ import (
 )
 
 var cfgFile string
+var walkpath string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "vsdep",
 	Short: "Find out which VS projects needs to build and test needs to run.",
-	Long: `Run vsdep with a commit id in VS project's root.
+	Long: `Run vsdep with a commit ID in VS project's root.
 
 vsdep [commit]
 
 Some examples:
 vsdep HEAD^
 vsdep fd32f09
+vsdep HEAD^^ -w ../
+
+Commit ID can be path to project folder with leading ID:
+vsdep ../otherProject/HEAD^^ -w ../
 `,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		result, err := vsdep.FindOut(args[0])
+		result, err := vsdep.FindOut(args[0], walkpath)
 		if err != nil {
 			return err
 		}
@@ -67,6 +72,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.vsdep.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&walkpath, "walkpath", "w", ".", "the path to start the search for .sln files")
 }
 
 // initConfig reads in config file and ENV variables if set.

@@ -1,6 +1,7 @@
 package vsdep
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -17,14 +18,24 @@ var wg = &sync.WaitGroup{}
 // FindOut which Visual Studio projects needs to build and
 // which tests needs to run by checking differences between
 // a git commit id and HEAD.
-func FindOut(lastcommit string) (*Result, error) {
-	changes, err := changes.Get(lastcommit)
+func FindOut(lastcommit string, walkpath ...string) (*Result, error) {
+	var wp string
+	switch {
+	case len(walkpath) > 1:
+		return nil, fmt.Errorf("walkpath cannot be more than one")
+	case len(walkpath) == 1:
+		wp = walkpath[0]
+	default:
+		wp = "."
+	}
+
+	affectedProjects, err := changes.Get(lastcommit)
 	if err != nil {
 		return nil, err
 	}
 
 	var paths []string
-	if err := filepath.Walk(".", func(pth string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(wp, func(pth string, info os.FileInfo, err error) error {
 		if path.Ext(info.Name()) == ".sln" {
 			paths = append(paths, pth)
 		}
@@ -38,7 +49,7 @@ func FindOut(lastcommit string) (*Result, error) {
 		return nil, err
 	}
 
-	for id := range changes {
+	for id := range affectedProjects {
 		go findDeps(g, id)
 		wg.Add(1)
 	}
@@ -68,7 +79,7 @@ func FindOut(lastcommit string) (*Result, error) {
 		}
 	}
 
-	for projectName := range changes {
+	for projectName := range affectedProjects {
 		for _, project := range projects {
 			if project.Name == projectName {
 				solutionsNeedsToBuild[path.Base(project.Sln)] = project.Sln

@@ -7,8 +7,11 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"regexp"
 	"strings"
 )
+
+var commitRe = regexp.MustCompile(`(?m)(.+/)(.+)`)
 
 // Get which projects changed after "lastcommit" (using git diff)
 func Get(lastcommit string) (map[string]string, error) {
@@ -16,6 +19,14 @@ func Get(lastcommit string) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	pth := ""
+
+	if len(commitRe.FindAllStringSubmatch(lastcommit, -1)) >= 1 {
+		pth = commitRe.FindAllStringSubmatch(lastcommit, -1)[0][1]
+		lastcommit = commitRe.FindAllStringSubmatch(lastcommit, -1)[0][2]
+	}
+	wd = path.Join(wd, pth)
 
 	cmd := exec.Command("git", "diff", "--name-only", lastcommit, "HEAD")
 	cmd.Stdin = os.Stdin
@@ -39,7 +50,7 @@ func Get(lastcommit string) (map[string]string, error) {
 dirs:
 	for p := range dirs {
 		for p != "." {
-			files, err := ioutil.ReadDir(p)
+			files, err := ioutil.ReadDir(path.Join(wd, p))
 			if err != nil && os.IsExist(err) {
 				return nil, err
 			}
