@@ -14,20 +14,25 @@ go github.com/atakanozceviz/vsdep/vsdep
 
 ```console
 $ vsdep -h
-Run vsdep with a commit id in VS project's root.
+Run vsdep with a commit ID in VS project's root.
 
 vsdep [commit]
 
 Some examples:
 vsdep HEAD^
 vsdep fd32f09
+vsdep HEAD^^ -w ../
+
+Commit ID can be path to project folder with leading ID:
+vsdep ../otherProject/HEAD^^ -w ../
 
 Usage:
   vsdep [flags]
 
 Flags:
-      --config string   config file (default is $HOME/.vsdep.yaml)
-  -h, --help            help for vsdep
+      --config string     config file (default is $HOME/.vsdep.yaml)
+  -h, --help              help for vsdep
+  -w, --walkpath string   the path to start the search for .sln files (default ".")
 ```
 
 ### Example output:
