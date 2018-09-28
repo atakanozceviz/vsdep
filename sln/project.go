@@ -26,7 +26,7 @@ func (project *Project) createGraph() error {
 			csprojFilePath := strings.Replace(path.Join(path.Dir(project.Path), pr.Include), "\\", "/", -1)
 			csproj, err := parseCsproj(csprojFilePath)
 			if err != nil {
-				err = fmt.Errorf("cannot parse csproj file referanced in %s: %v", project.Path, err)
+				err = fmt.Errorf("cannot parse csproj file referenced in %s: %v", project.Path, err)
 				return err
 			}
 
