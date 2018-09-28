@@ -2,6 +2,7 @@ package sln
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -35,6 +36,7 @@ func parseSln(pth string) ([]*Project, error) {
 
 			csproj, err := parseCsproj(csprojPath)
 			if err != nil {
+				err = fmt.Errorf("cannot parse csproj file referanced in %s: %v", pth, err)
 				return nil, err
 			}
 

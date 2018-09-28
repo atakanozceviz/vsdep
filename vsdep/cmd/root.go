@@ -44,15 +44,16 @@ Commit ID can be path to project folder with leading ID:
 vsdep ../otherProject/HEAD^^ -w ../
 `,
 	Args: cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		result, err := vsdep.FindOut(args[0], walkpath)
 		if err != nil {
-			return err
+			fmt.Printf("%v\n", err)
+			os.Exit(1)
 		}
 		if err := vsdep.PrettyPrint(result); err != nil {
-			return err
+			fmt.Printf("%v\n", err)
+			os.Exit(1)
 		}
-		return nil
 	},
 }
 
